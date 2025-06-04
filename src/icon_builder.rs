@@ -6,7 +6,7 @@ fn load_digit_image(digit: u8) -> Result<RgbaImage, Box<dyn std::error::Error>> 
 	Ok(img)
 }
 
-pub fn create_percentage_icon(percentage: u8) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+pub fn create_percentage_icon(percentage: u8) -> Result<RgbaImage, Box<dyn std::error::Error>> {
 	let tens = percentage / 10;
 	let ones = percentage % 10;
 	
@@ -33,8 +33,5 @@ pub fn create_percentage_icon(percentage: u8) -> Result<Vec<u8>, Box<dyn std::er
 		}
 	}
 	
-	// Convert to raw RGBA bytes
-	let raw_data = combined_img.into_raw();
-	Ok(raw_data)
+	Ok(combined_img)
 }
-
