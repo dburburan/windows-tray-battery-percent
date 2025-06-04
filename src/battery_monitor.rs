@@ -1,6 +1,5 @@
 use battery::Manager;
-
-use crate::debug_util::dbgt;
+use crate::debug_util::dmsg;
 
 pub struct BatteryMonitor {
 	manager: Manager,
@@ -28,7 +27,7 @@ impl BatteryMonitor {
 					Some(Err(e)) => { Err(format!("Failed to get battery info: {:?}", e)) }
 					Some(Ok(bat)) => {
 						let soc = bat.state_of_charge().value;
-						dbgt!(soc);
+						dmsg!("Charge: {soc}");
 						let percentage = (soc * 100.0).round() as i32;
 						Ok(percentage)
 					}

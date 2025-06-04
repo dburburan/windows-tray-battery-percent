@@ -38,26 +38,48 @@ pub fn debug_println(filename: &str, line: u32, msg: &str) {
 	let seconds = secs % 60;
 
 	let f = string_take_end(filename, 20);
-	println!("[{:20}:{:3}] {:02}:{:02}:{:02}.{:03}: {}", f, line, hours, minutes, seconds, millis, msg);
+	println!("[{:>20}:{:<3}] {:02}:{:02}:{:02}.{:03}: {}", f, line, hours, minutes, seconds, millis, msg);
 }
 
 #[macro_export]
-macro_rules! debug_timestamp {
+macro_rules! debug_value {
 	($val:expr) => {
-		match $val {
-			tmp => {
-				crate::debug_util::debug_println(
-					file!(),
-					line!(),
-					&format!("{} = {:?}", stringify!($val), &tmp)
-				);
-				tmp
+		#[cfg(not(feature = "no-debug-output"))]
+		{
+			match $val {
+				tmp => {
+					crate::debug_util::debug_println(
+						file!(),
+						line!(),
+						&format!("{} = {:?}", stringify!($val), &tmp)
+					);
+					tmp
+				}
 			}
+		}
+		#[cfg(feature = "no-debug-output")]
+		{
+			$val
 		}
 	};
 	// Handle multiple values
 	($($val:expr),+ $(,)?) => {
-		($(ts_dbg!($val)),+,)
+		($(debug_value!($val)),+,)
 	};
 }
-pub use debug_timestamp as dbgt; // Re-export it as dbgt
+pub use debug_value as dbgt; // Re-export it as dbgt
+
+#[macro_export]
+macro_rules! debug_message {
+	($($arg:tt)*) => {
+		#[cfg(not(feature = "no-debug-output"))]
+		{
+			crate::debug_util::debug_println(
+				file!(),
+				line!(),
+				&format!($($arg)*)
+			);
+		}
+	};
+}
+pub use debug_message as dmsg;

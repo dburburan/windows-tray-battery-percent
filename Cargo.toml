@@ -3,6 +3,13 @@ name = "windows-tray-battery-percent"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = []
+no-debug-output = []
+
+[profile.release]
+features = ["no-debug-output"]
+
 [dependencies]
 battery = "0.7.8"
 image = "0.25.6"

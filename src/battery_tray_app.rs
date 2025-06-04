@@ -5,10 +5,10 @@ use winit::application::ApplicationHandler;
 use winit::event_loop::{ActiveEventLoop, ControlFlow};
 use winit::event::WindowEvent;
 use winit::window::WindowId;
-
 use crate::battery_monitor::BatteryMonitor;
 use crate::icon_builder::IconBuilder;
 use crate::tray_util::TrayBuilder;
+use crate::debug_util::dmsg;
 
 pub struct BatteryTrayApp {
 	pub battery_monitor: BatteryMonitor,
@@ -26,30 +26,20 @@ impl BatteryTrayApp {
 			tray_icon: None,
 		}
 	}
-}
 
-impl ApplicationHandler for BatteryTrayApp {
-	fn resumed(&mut self, _event_loop: &ActiveEventLoop) {
-		// Application resumed
-	}
-
-	fn window_event(&mut self, _event_loop: &ActiveEventLoop, _window_id: WindowId, _event: WindowEvent) {
-		// Handle window events (we don't have windows, so this is empty)
-	}
-
-	fn new_events(&mut self, event_loop: &ActiveEventLoop, _cause: winit::event::StartCause) {
+	fn process_all_events(&mut self, event_loop: &ActiveEventLoop) {
 		// Process tray icon events
 		while let Ok(event) = TrayIconEvent::receiver().try_recv() {
-			println!("Tray event: {:?}", event);
+			dmsg!("Tray event: {:?}", event);
 		}
 
 		// Process menu events
 		while let Ok(event) = MenuEvent::receiver().try_recv() {
-			println!("Menu event: {:?}", event);
+			dmsg!("Menu event: {:?}", event);
 			// Handle quit menu item
 			match event.id.0.as_str() {
 				"Quit" => {
-					println!("Quit selected, exiting...");
+					dmsg!("Quit selected, exiting...");
 					std::process::exit(0);
 				}
 				_ => {}
@@ -63,5 +53,17 @@ impl ApplicationHandler for BatteryTrayApp {
 
 		// Set control flow to wake up after 1 second
 		event_loop.set_control_flow(ControlFlow::WaitUntil(Instant::now() + Duration::from_secs(1)));
+	}
+}
+
+impl ApplicationHandler for BatteryTrayApp {
+	fn resumed(&mut self, event_loop: &ActiveEventLoop) {
+	}
+
+	fn window_event(&mut self, event_loop: &ActiveEventLoop, _window_id: WindowId, event: WindowEvent) {
+	}
+
+	fn new_events(&mut self, event_loop: &ActiveEventLoop, _cause: winit::event::StartCause) {
+		self.process_all_events(event_loop)
 	}
 }

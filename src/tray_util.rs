@@ -33,7 +33,6 @@ impl TrayBuilder for BatteryTrayApp {
 		if battery_percent == self.current_percentage { Ok(()) }
 		else {
 			self.current_percentage = battery_percent;
-			dbg!(battery_percent);
 
 			// Create new icon image
 			let Ok(icon_image) = self.icon_builder.create_percentage_icon(battery_percent) else {
