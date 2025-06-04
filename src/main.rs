@@ -6,6 +6,7 @@ mod battery_monitor;
 mod icon_builder;
 mod tray_util;
 mod battery_tray_app;
+mod debug_util;
 
 fn main() -> Result<(), String> {
 	// Create battery monitor

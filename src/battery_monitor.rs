@@ -1,16 +1,22 @@
 use battery::Manager;
 
+use crate::debug_util::dbgt;
+
 pub struct BatteryMonitor {
-    manager: Manager,
+	manager: Manager,
 }
 
 impl BatteryMonitor {
 	pub fn new() -> Result<Self, String> {
 		// Create a battery manager
-		match battery::Manager::new() {
-			Ok(manager) => Ok(BatteryMonitor{manager}),
-			Err(e) => Err(format!("Failed to create battery manager: {:?}", e))
-		}
+		let manager = match battery::Manager::new() {
+			Ok(manager) => manager,
+			Err(e) => return Err(format!("Failed to create battery manager: {:?}", e))
+		};
+
+		Ok(BatteryMonitor {
+			manager,
+		})
 	}
 
 	pub fn get_percentage(&self) -> Result<i32, String> {
@@ -21,9 +27,9 @@ impl BatteryMonitor {
 					None => { Err(format!("No batteries found.")) }
 					Some(Err(e)) => { Err(format!("Failed to get battery info: {:?}", e)) }
 					Some(Ok(bat)) => {
-						dbg!(bat.state_of_charge());
-						let percentage = (bat.state_of_charge().value * 100.0).round() as i32;
-						dbg!(percentage);
+						let soc = bat.state_of_charge().value;
+						dbgt!(soc);
+						let percentage = (soc * 100.0).round() as i32;
 						Ok(percentage)
 					}
 				}
