@@ -1,5 +1,8 @@
 #![allow(unused)]
 
+// Disable console in release builds
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 use winit::event_loop::EventLoop;
 use tray_icon::{TrayIconEvent, menu::MenuEvent};
 
