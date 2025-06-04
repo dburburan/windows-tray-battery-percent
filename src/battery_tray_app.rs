@@ -22,7 +22,7 @@ impl BatteryTrayApp {
 		Self {
 			battery_monitor,
 			icon_builder,
-			current_percentage: 255, // Invalid value to force initial update
+			current_percentage: -1, // Invalid value to force initial update
 			tray_icon: None,
 		}
 	}
