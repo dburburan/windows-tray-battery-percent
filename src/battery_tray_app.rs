@@ -1,10 +1,8 @@
 use std::time::{Duration, Instant};
-use std::thread;
-use tray_icon::{TrayIcon, TrayIconBuilder, Icon, TrayIconEvent};
-use tray_icon::menu::{Menu, MenuItem, MenuEvent};
-use image::RgbaImage;
+use tray_icon::{TrayIcon, TrayIconEvent};
+use tray_icon::menu::MenuEvent;
 use winit::application::ApplicationHandler;
-use winit::event_loop::{EventLoop, ActiveEventLoop, ControlFlow};
+use winit::event_loop::{ActiveEventLoop, ControlFlow};
 use winit::event::WindowEvent;
 use winit::window::WindowId;
 

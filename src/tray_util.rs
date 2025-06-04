@@ -1,15 +1,7 @@
-use std::time::{Duration, Instant};
-use std::thread;
-use tray_icon::{TrayIcon, TrayIconBuilder, Icon, TrayIconEvent};
-use tray_icon::menu::{Menu, MenuItem, MenuEvent};
-use image::RgbaImage;
-use winit::application::ApplicationHandler;
-use winit::event_loop::{EventLoop, ActiveEventLoop, ControlFlow};
-use winit::event::WindowEvent;
-use winit::window::WindowId;
+use tray_icon::{TrayIcon, TrayIconBuilder, Icon};
+use tray_icon::menu::{Menu, MenuItem};
 
 use crate::battery_tray_app::BatteryTrayApp;
-use crate::icon_builder;
 
 pub trait TrayBuilder {
     fn creset_tray_icon(&mut self) -> Result<(), String>;
