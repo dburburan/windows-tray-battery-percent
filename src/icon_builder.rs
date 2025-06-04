@@ -1,4 +1,4 @@
-use image::{ImageBuffer, RgbaImage};
+use image::{ImageBuffer, RgbaImage, imageops};
 
 fn load_digit_image(digit: u8) -> Result<RgbaImage, Box<dyn std::error::Error>> {
 	let path = format!("assets/{}.png", digit);
@@ -14,24 +14,21 @@ pub fn create_percentage_icon(percentage: u8) -> Result<RgbaImage, Box<dyn std::
 	let tens_img = load_digit_image(tens)?;
 	let ones_img = load_digit_image(ones)?;
 	
-	// Create a 6x5 image (two 3x5 digits side by side)
-	let mut combined_img: RgbaImage = ImageBuffer::new(6, 5);
+	// Create a 7x5 image (two 3x5 digits side by side, with a gap in the middle)
+	let mut combined_img: RgbaImage = ImageBuffer::new(7, 5);
 	
-	// Copy tens digit to left side
-	for y in 0..5 {
-		for x in 0..3 {
-			let pixel = tens_img.get_pixel(x, y);
-			combined_img.put_pixel(x, y, *pixel);
-		}
-	}
+	// Copy tens digit to left side using built-in overlay function
+	imageops::overlay(&mut combined_img, &tens_img, 0, 0);
 	
-	// Copy ones digit to right side
-	for y in 0..5 {
-		for x in 0..3 {
-			let pixel = ones_img.get_pixel(x, y);
-			combined_img.put_pixel(x + 3, y, *pixel);
-		}
-	}
+	// Copy ones digit to right side using built-in overlay function
+	imageops::overlay(&mut combined_img, &ones_img, 4, 0);
 	
-	Ok(combined_img)
+	// Scale up the image using nearest neighbor interpolation to avoid fuzziness
+	let scale_factor = 4; // Scale up by 4x (6x5 becomes 24x20)
+	let scaled_img = imageops::resize(&combined_img, 
+		combined_img.width() * scale_factor, 
+		combined_img.height() * scale_factor, 
+		imageops::FilterType::Nearest);
+	
+	Ok(scaled_img)
 }

@@ -50,12 +50,7 @@ impl ApplicationHandler for BatteryTrayApp {
 			eprintln!("Failed to update tray icon: {}", e);
 		}
 
-
-
 		// Set control flow to wake up after 1 second
 		event_loop.set_control_flow(ControlFlow::WaitUntil(Instant::now() + Duration::from_secs(1)));
-
-
-
 	}
 }
