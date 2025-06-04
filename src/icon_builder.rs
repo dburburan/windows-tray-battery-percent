@@ -37,7 +37,7 @@ impl IconBuilder {
 		let ones_img = &self.digit_images[ones as usize];
 		
 		// A typical icon in the tray is 16x16
-		let mut combined_img: RgbaImage = ImageBuffer::new(7, 7);
+		let mut combined_img: RgbaImage = ImageBuffer::new(7, 6);
 		
 		// Copy tens digit to left side using built-in overlay function
 		imageops::overlay(&mut combined_img, tens_img, 0, 1);
