@@ -2,6 +2,7 @@ use tray_icon::{TrayIcon, TrayIconBuilder, Icon};
 use tray_icon::menu::{Menu, MenuItem};
 
 use crate::battery_tray_app::BatteryTrayApp;
+use crate::debug_util::dmsg;
 
 pub trait TrayBuilder {
     fn creset_tray_icon(&mut self) -> Result<(), String>;
@@ -10,7 +11,7 @@ pub trait TrayBuilder {
 fn create_tray_icon(icon: Icon) -> Result<TrayIcon, String> {
 	// Create a simple menu
 	let menu = Menu::new();
-	let quit_item = MenuItem::new("Quit", true, None);
+	let quit_item = MenuItem::with_id("quit", "Quit", true, None);
 	menu.append(&quit_item).map_err(|e| format!("Failed to add menu item: {:?}", e))?;
 	
 	// Create the tray icon
@@ -30,7 +31,9 @@ impl TrayBuilder for BatteryTrayApp {
 		let battery_percent = self.battery_monitor.get_percentage()?;
 
 		// Only update tray icon if percentage changed
-		if battery_percent == self.current_percentage { Ok(()) }
+		if battery_percent == self.current_percentage {
+			Ok(())
+		}
 		else {
 			self.current_percentage = battery_percent;
 
@@ -59,7 +62,7 @@ impl TrayBuilder for BatteryTrayApp {
 						Err(format!("Failed to update tray icon: {:?}", e))
 					}
 					else {
-						println!("Updated tray icon to {}%", battery_percent);
+						dmsg!("Updated tray icon to {}%", battery_percent);
 						Ok(())
 					}
 				}
