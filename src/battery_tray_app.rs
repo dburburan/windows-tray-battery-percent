@@ -8,19 +8,22 @@ use winit::event_loop::{EventLoop, ActiveEventLoop, ControlFlow};
 use winit::event::WindowEvent;
 use winit::window::WindowId;
 
-use crate::battery_monitor;
+use crate::battery_monitor::BatteryMonitor;
+use crate::icon_builder::IconBuilder;
 use crate::tray_util::TrayBuilder;
 
 pub struct BatteryTrayApp {
-	pub battery_monitor: battery_monitor::BatteryMonitor,
+	pub battery_monitor: BatteryMonitor,
+	pub icon_builder: IconBuilder,
 	pub current_percentage: i32,
 	pub tray_icon: Option<TrayIcon>,
 }
 
 impl BatteryTrayApp {
-	pub fn new(battery_monitor: battery_monitor::BatteryMonitor) -> Self {
+	pub fn new(battery_monitor: BatteryMonitor, icon_builder : IconBuilder) -> Self {
 		Self {
 			battery_monitor,
+			icon_builder,
 			current_percentage: 255, // Invalid value to force initial update
 			tray_icon: None,
 		}

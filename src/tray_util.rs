@@ -44,7 +44,7 @@ impl TrayBuilder for BatteryTrayApp {
 			dbg!(battery_percent);
 
 			// Create new icon image
-			let Ok(icon_image) = icon_builder::create_percentage_icon(battery_percent as u8) else {
+			let Ok(icon_image) = self.icon_builder.create_percentage_icon(battery_percent) else {
 				return Err(format!("Couldn't build icon"));
 			};
 			let icon = Icon::from_rgba(icon_image.clone().into_raw(), icon_image.width(), icon_image.height())
