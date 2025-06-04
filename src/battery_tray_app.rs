@@ -17,6 +17,16 @@ pub struct BatteryTrayApp {
 	pub tray_icon: Option<TrayIcon>,
 }
 
+impl BatteryTrayApp {
+	pub fn new(battery_monitor: battery_monitor::BatteryMonitor) -> Self {
+		Self {
+			battery_monitor,
+			current_percentage: 255, // Invalid value to force initial update
+			tray_icon: None,
+		}
+	}
+}
+
 impl ApplicationHandler for BatteryTrayApp {
 	fn resumed(&mut self, _event_loop: &ActiveEventLoop) {
 		// Application resumed

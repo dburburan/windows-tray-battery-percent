@@ -23,11 +23,7 @@ fn main() -> Result<(), String> {
 	let battery_monitor = battery_monitor::BatteryMonitor::new()?;
 	
 	// Create application
-	let mut app = battery_tray_app::BatteryTrayApp {
-		battery_monitor,
-		current_percentage: 255, // Invalid value to force initial update
-		tray_icon: None,
-	};
+	let mut app = battery_tray_app::BatteryTrayApp::new(battery_monitor);
 
 	// Run the event loop
 	event_loop.run_app(&mut app).map_err(|e| format!("Event loop error: {:?}", e))?;
