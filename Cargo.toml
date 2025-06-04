@@ -8,7 +8,9 @@ default = []
 no-debug-output = []
 
 [profile.release]
-features = ["no-debug-output"]
+strip = true
+lto = true
+codegen-units = 1
 
 [dependencies]
 battery = "0.7.8"
