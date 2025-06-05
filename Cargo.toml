@@ -17,3 +17,6 @@ battery = "0.7.8"
 image = "0.25.6"
 tray-icon = "0.20.1"
 winit = "0.30"
+
+[build-dependencies]
+winres = "0.1"

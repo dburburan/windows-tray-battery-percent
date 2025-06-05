@@ -46,14 +46,14 @@ impl IconBuilder {
 		imageops::overlay(&mut combined_img, ones_img, 4, 1);
 		
 		// Scale up the image using nearest neighbor interpolation to avoid fuzziness
-		let scale_factor = 2; // Scale up by 2x
-		let scaled_img = imageops::resize(&combined_img, 
-			combined_img.width() * scale_factor, 
-			combined_img.height() * scale_factor, 
+		let scale_factor = 8; // Scale up by 8x
+		let scaled_img = imageops::resize(&combined_img,
+			combined_img.width() * scale_factor,
+			combined_img.height() * scale_factor,
 			imageops::FilterType::Nearest);
 
-		// Then scale the image to the desired square 16x16
-		let scaled_img = imageops::resize(&scaled_img, 16, 16, imageops::FilterType::Lanczos3);
+		// Then scale the image to the desired square 64x64
+		let scaled_img = imageops::resize(&scaled_img, 64, 64, imageops::FilterType::Lanczos3);
 		
 		Ok(scaled_img)
 	}
