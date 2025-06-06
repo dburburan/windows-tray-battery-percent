@@ -19,6 +19,10 @@ pub enum UserEvent {
 }
 
 fn main() -> Result<(), String> {
+	// Enable backtraces in debug mode
+	#[cfg(debug_assertions)]
+	std::env::set_var("RUST_BACKTRACE", "full");
+
 	// Create battery monitor
 	let battery_monitor = battery_monitor::BatteryMonitor::new()?;
 
