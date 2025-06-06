@@ -5,7 +5,7 @@ use crate::battery_tray_app::BatteryTrayApp;
 use crate::debug_util::dmsg;
 
 pub trait TrayBuilder {
-    fn creset_tray_icon(&mut self) -> Result<(), String>;
+    fn sync_tray_icon(&mut self) -> Result<(), String>;
 }
 
 fn create_tray_icon(icon: Icon) -> Result<TrayIcon, String> {
@@ -26,7 +26,7 @@ fn create_tray_icon(icon: Icon) -> Result<TrayIcon, String> {
 }
 
 impl TrayBuilder for BatteryTrayApp {
-	fn creset_tray_icon(&mut self) -> Result<(), String> {
+	fn sync_tray_icon(&mut self) -> Result<(), String> {
 		// Get current battery percentage
 		let battery_percent = self.battery_monitor.get_percentage()?;
 

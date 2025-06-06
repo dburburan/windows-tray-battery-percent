@@ -28,41 +28,40 @@ impl BatteryTrayApp {
 			tray_icon: None,
 		}
 	}
+
+	fn check_battery(&mut self, event_loop: &ActiveEventLoop) {
+		if let Err(e) = self.sync_tray_icon() {
+			dmsg!("Failed to update tray icon: {}", e);
+		}
+		
+		// Make sure we check again soon
+		event_loop.set_control_flow(ControlFlow::WaitUntil(Instant::now() + Duration::from_secs(UPDATE_SLEEP_SECONDS)));
+	}
 }
 
 impl ApplicationHandler<UserEvent> for BatteryTrayApp {
 	fn resumed(&mut self, event_loop: &ActiveEventLoop) {
-		// Set up periodic battery updates
-		event_loop.set_control_flow(ControlFlow::WaitUntil(Instant::now()));
+		dmsg!("Resume event");
+		self.check_battery(event_loop);
 	}
 
-	fn window_event(&mut self, _event_loop: &ActiveEventLoop, _window_id: WindowId, _event: WindowEvent) {
+	fn window_event(&mut self, event_loop: &ActiveEventLoop, _window_id: WindowId, event: WindowEvent) {
+		dmsg!("Window event: {:?}", event);
+		self.check_battery(event_loop);
 	}
 
 	fn new_events(&mut self, event_loop: &ActiveEventLoop, cause: winit::event::StartCause) {
-		// Only update battery on timer events, not on every event
-		match cause {
-			winit::event::StartCause::ResumeTimeReached { .. } => {
-				// Update tray icon with current battery percentage
-				if let Err(e) = self.creset_tray_icon() {
-					eprintln!("Failed to update tray icon: {}", e);
-				}
-				// Schedule next update
-				event_loop.set_control_flow(ControlFlow::WaitUntil(Instant::now() + Duration::from_secs(UPDATE_SLEEP_SECONDS)));
-			}
-			_ => {
-				// Don't spam logs for other events
-			}
-		}
+		dmsg!("New event: {:?}", cause);
+		self.check_battery(event_loop);
 	}
 
-	fn user_event(&mut self, _event_loop: &ActiveEventLoop, event: UserEvent) {
+	fn user_event(&mut self, event_loop: &ActiveEventLoop, event: UserEvent) {
+		dmsg!("User event: {:?}", event);
+		self.check_battery(event_loop);
+
 		match event {
-			UserEvent::TrayIconEvent(tray_event) => {
-				dmsg!("Tray event: {:?}", tray_event);
-			}
+			UserEvent::TrayIconEvent(tray_event) => { }
 			UserEvent::MenuEvent(menu_event) => {
-				dmsg!("Menu event: {:?}", menu_event);
 				// Handle quit menu item
 				match menu_event.id.0.as_str() {
 					"quit" => {
