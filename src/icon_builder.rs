@@ -2,16 +2,16 @@ use image::{ImageBuffer, RgbaImage, imageops};
 
 // Embed digit images at compile time
 const DIGIT_BYTES: [&[u8]; 10] = [
-	include_bytes!("../assets/0.png"),
-	include_bytes!("../assets/1.png"),
-	include_bytes!("../assets/2.png"),
-	include_bytes!("../assets/3.png"),
-	include_bytes!("../assets/4.png"),
-	include_bytes!("../assets/5.png"),
-	include_bytes!("../assets/6.png"),
-	include_bytes!("../assets/7.png"),
-	include_bytes!("../assets/8.png"),
-	include_bytes!("../assets/9.png"),
+	include_bytes!("../assets/0.bmp"),
+	include_bytes!("../assets/1.bmp"),
+	include_bytes!("../assets/2.bmp"),
+	include_bytes!("../assets/3.bmp"),
+	include_bytes!("../assets/4.bmp"),
+	include_bytes!("../assets/5.bmp"),
+	include_bytes!("../assets/6.bmp"),
+	include_bytes!("../assets/7.bmp"),
+	include_bytes!("../assets/8.bmp"),
+	include_bytes!("../assets/9.bmp"),
 ];
 
 pub struct IconBuilder {
