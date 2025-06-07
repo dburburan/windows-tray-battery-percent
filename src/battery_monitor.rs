@@ -18,7 +18,7 @@ impl BatteryMonitor {
 		})
 	}
 
-	pub fn get_percentage(&self) -> Result<i32, String> {
+	pub fn get_battery_info(&self) -> Result<(i32, bool), String> {
 		match self.manager.batteries() {
 			Err(e) => { Err(format!("Failed to retrieve batteries: {:?}", e)) }
 			Ok(mut batteries) => {
@@ -26,10 +26,11 @@ impl BatteryMonitor {
 					None => { Err(format!("No batteries found.")) }
 					Some(Err(e)) => { Err(format!("Failed to get battery info: {:?}", e)) }
 					Some(Ok(bat)) => {
+						dmsg!("{:?}", bat);
 						let soc = bat.state_of_charge().value;
-						dmsg!("Charge: {soc}");
 						let percentage = (soc * 100.0).round() as i32;
-						Ok(percentage)
+						let is_charging = matches!(bat.state(), battery::State::Charging);
+						Ok((percentage, is_charging))
 					}
 				}
 			}

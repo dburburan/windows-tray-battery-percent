@@ -27,8 +27,8 @@ fn create_tray_icon(icon: Icon) -> Result<TrayIcon, String> {
 
 impl TrayBuilder for BatteryTrayApp {
 	fn sync_tray_icon(&mut self) -> Result<(), String> {
-		// Get current battery percentage
-		let battery_percent = self.battery_monitor.get_percentage()?;
+		// Get current battery info (percentage and charging status)
+		let (battery_percent, is_charging) = self.battery_monitor.get_battery_info()?;
 
 		// Only update tray icon if percentage changed
 		if battery_percent == self.current_percentage {
@@ -38,7 +38,7 @@ impl TrayBuilder for BatteryTrayApp {
 			self.current_percentage = battery_percent;
 
 			// Create new icon image
-			let Ok(icon_image) = self.icon_builder.create_percentage_icon(battery_percent) else {
+			let Ok(icon_image) = self.icon_builder.create_percentage_icon(battery_percent, is_charging) else {
 				return Err(format!("Couldn't build icon"));
 			};
 			let icon = Icon::from_rgba(icon_image.clone().into_raw(), icon_image.width(), icon_image.height())
@@ -62,7 +62,7 @@ impl TrayBuilder for BatteryTrayApp {
 						Err(format!("Failed to update tray icon: {:?}", e))
 					}
 					else {
-						dmsg!("Updated tray icon to {}%", battery_percent);
+						dmsg!("Updated tray icon to {}%{}", battery_percent, if is_charging { " (charging)" } else { "" });
 						Ok(())
 					}
 				}
