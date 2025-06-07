@@ -1,36 +1,29 @@
 use std::time::{Duration, Instant};
-use tray_icon::TrayIcon;
 use winit::application::ApplicationHandler;
 use winit::event_loop::{ActiveEventLoop, ControlFlow};
 use winit::event::WindowEvent;
 use winit::window::WindowId;
 use crate::battery_monitor::BatteryMonitor;
 use crate::icon_builder::IconBuilder;
-use crate::tray_util::TrayBuilder;
+use crate::battery_tray_icon::BatteryTrayIcon;
 use crate::debug_util::dmsg;
 use crate::UserEvent;
 
 const UPDATE_SLEEP_SECONDS: u64 = 30;
 
 pub struct BatteryTrayApp {
-	pub battery_monitor: BatteryMonitor,
-	pub icon_builder: IconBuilder,
-	pub current_percentage: i32,
-	pub tray_icon: Option<TrayIcon>,
+	pub tray_icon: BatteryTrayIcon,
 }
 
 impl BatteryTrayApp {
 	pub fn new(battery_monitor: BatteryMonitor, icon_builder : IconBuilder) -> Self {
 		Self {
-			battery_monitor,
-			icon_builder,
-			current_percentage: -1, // Invalid value to force initial update
-			tray_icon: None,
+			tray_icon: BatteryTrayIcon::new(battery_monitor, icon_builder),
 		}
 	}
 
 	fn check_battery(&mut self, event_loop: &ActiveEventLoop) {
-		if let Err(e) = self.sync_tray_icon() {
+		if let Err(e) = self.tray_icon.sync_tray_icon() {
 			dmsg!("Failed to update tray icon: {}", e);
 		}
 		
@@ -60,7 +53,7 @@ impl ApplicationHandler<UserEvent> for BatteryTrayApp {
 		self.check_battery(event_loop);
 
 		match event {
-			UserEvent::TrayIconEvent(tray_event) => { }
+			UserEvent::TrayIconEvent(_tray_event) => { }
 			UserEvent::MenuEvent(menu_event) => {
 				// Handle quit menu item
 				match menu_event.id.0.as_str() {

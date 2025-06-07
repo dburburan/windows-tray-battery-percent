@@ -1,11 +1,15 @@
 use tray_icon::{TrayIcon, TrayIconBuilder, Icon};
 use tray_icon::menu::{Menu, MenuItem};
 
-use crate::battery_tray_app::BatteryTrayApp;
+use crate::battery_monitor::BatteryMonitor;
+use crate::icon_builder::IconBuilder;
 use crate::debug_util::dmsg;
 
-pub trait TrayBuilder {
-    fn sync_tray_icon(&mut self) -> Result<(), String>;
+pub struct BatteryTrayIcon {
+	tray_icon: Option<TrayIcon>,
+	battery_monitor: BatteryMonitor,
+	icon_builder: IconBuilder,
+	current_percentage: i32,
 }
 
 fn create_tray_icon(icon: Icon) -> Result<TrayIcon, String> {
@@ -25,8 +29,17 @@ fn create_tray_icon(icon: Icon) -> Result<TrayIcon, String> {
 	Ok(tray_icon)
 }
 
-impl TrayBuilder for BatteryTrayApp {
-	fn sync_tray_icon(&mut self) -> Result<(), String> {
+impl BatteryTrayIcon {
+	pub fn new(battery_monitor: BatteryMonitor, icon_builder: IconBuilder) -> Self {
+		Self {
+			tray_icon: None,
+			battery_monitor,
+			icon_builder,
+			current_percentage: -1, // Invalid value to force initial update
+		}
+	}
+
+	pub fn sync_tray_icon(&mut self) -> Result<(), String> {
 		// Get current battery info (percentage and charging status)
 		let (battery_percent, is_charging) = self.battery_monitor.get_battery_info()?;
 

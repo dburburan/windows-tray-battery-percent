@@ -8,7 +8,7 @@ use tray_icon::{TrayIconEvent, menu::MenuEvent};
 
 mod battery_monitor;
 mod icon_builder;
-mod tray_util;
+mod battery_tray_icon;
 mod battery_tray_app;
 mod debug_util;
 

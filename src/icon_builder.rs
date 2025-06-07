@@ -1,4 +1,4 @@
-use image::{imageops, ImageBuffer, Rgb, RgbaImage};
+use image::{imageops, ImageBuffer, RgbaImage};
 
 const ICON_WIDTH: u32 = 64;
 const ICON_HEIGHT: u32 = 64;
