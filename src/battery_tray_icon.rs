@@ -42,6 +42,7 @@ impl BatteryTrayIcon {
 	pub fn sync_tray_icon(&mut self) -> Result<(), String> {
 		// Get current battery info (percentage and charging status)
 		let battery_info = self.battery_monitor.get_battery_info()?;
+		dmsg!("{:?}", &battery_info);
 
 		// Only update tray icon if battery state changed
 		if Some(&battery_info) == self.cached_battery_info.as_ref() {
@@ -51,7 +52,7 @@ impl BatteryTrayIcon {
 			self.cached_battery_info = Some(battery_info.clone());
 
 			// Create new icon image
-			let Ok(icon_image) = self.icon_builder.create_percentage_icon(battery_info.percentage, battery_info.is_charging) else {
+			let Ok(icon_image) = self.icon_builder.create_percentage_icon(battery_info.percentage, battery_info.discharge_rate_percent, battery_info.is_charging) else {
 				return Err(format!("Couldn't build icon"));
 			};
 			let icon = Icon::from_rgba(icon_image.clone().into_raw(), icon_image.width(), icon_image.height())

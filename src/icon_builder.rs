@@ -20,15 +20,36 @@ const DIGIT_BYTES: [&[u8]; 10] = [
 pub struct IconBuilder {
 	digit_images: [RgbaImage; 10],
 	green_gradient_overlay: RgbaImage,
+	red_gradient_overlay: RgbaImage,
 }
 
-fn image_overlay_multiply(img: &mut RgbaImage, overlay: &RgbaImage) {
-	for (img_px, overlay_px) in img.pixels_mut().zip(overlay.pixels()) {
-		// Multiply blend: result = (original * overlay) / 255
-		img_px[0] = ((img_px[0] as u16 * overlay_px[0] as u16) / 255) as u8;  // Red
-		img_px[1] = ((img_px[1] as u16 * overlay_px[1] as u16) / 255) as u8;  // Green
-		img_px[2] = ((img_px[2] as u16 * overlay_px[2] as u16) / 255) as u8;  // Blue
-		// Alpha channel remains unchanged
+fn image_overlay_multiply(img: &mut RgbaImage, overlay: &RgbaImage, x_offset: i32, y_offset: i32) {
+	let img_width = img.width() as i32;
+	let img_height = img.height() as i32;
+	let overlay_width = overlay.width() as i32;
+	let overlay_height = overlay.height() as i32;
+
+	// Calculate intersection bounds
+	let start_x = 0.max(x_offset);
+	let start_y = 0.max(y_offset);
+	let end_x = img_width.min(x_offset + overlay_width);
+	let end_y = img_height.min(y_offset + overlay_height);
+
+	// Loop over the intersection area
+	for img_y in start_y..end_y {
+		for img_x in start_x..end_x {
+			let overlay_x = img_x - x_offset;
+			let overlay_y = img_y - y_offset;
+
+			let img_px = img.get_pixel_mut(img_x as u32, img_y as u32);
+			let overlay_px = overlay.get_pixel(overlay_x as u32, overlay_y as u32);
+
+			// Multiply blend: result = (original * overlay) / 255
+			img_px[0] = ((img_px[0] as u16 * overlay_px[0] as u16) / 255) as u8;  // Red
+			img_px[1] = ((img_px[1] as u16 * overlay_px[1] as u16) / 255) as u8;  // Green
+			img_px[2] = ((img_px[2] as u16 * overlay_px[2] as u16) / 255) as u8;  // Blue
+			// Alpha channel remains unchanged
+		}
 	}
 }
 
@@ -43,11 +64,17 @@ impl IconBuilder {
 		let start_color = image::Rgba([0, 255, 0, 255]);
 		let end_color = image::Rgba([255, 255, 255, 255]);
 		imageops::vertical_gradient(&mut green_gradient_overlay, &start_color, &end_color);
+
+		// Create red overlay used when discharging
+		let mut red_gradient_overlay = ImageBuffer::new(ICON_WIDTH, ICON_HEIGHT);
+		let start_color = image::Rgba([255, 200, 200, 255]);
+		let end_color = image::Rgba([255, 0, 0, 255]);
+		imageops::vertical_gradient(&mut red_gradient_overlay, &start_color, &end_color);
 		
-		Ok(IconBuilder { digit_images, green_gradient_overlay })
+		Ok(IconBuilder { digit_images, green_gradient_overlay, red_gradient_overlay })
 	}
 	
-	pub fn create_percentage_icon(&self, percentage: i32, is_charging: bool) -> Result<RgbaImage, Box<dyn std::error::Error>> {
+	pub fn create_percentage_icon(&self, percentage: i32, discharge_rate_percent: i32, is_charging: bool) -> Result<RgbaImage, Box<dyn std::error::Error>> {
 		let p = percentage.clamp(0, 99);
 		let tens = p / 10;
 		let ones = p % 10;
@@ -77,7 +104,16 @@ impl IconBuilder {
 		
 		// Apply green gradient if charging
 		if is_charging {
-			image_overlay_multiply(&mut scaled_img, &self.green_gradient_overlay);
+			image_overlay_multiply(&mut scaled_img, &self.green_gradient_overlay, 0, 0);
+		}
+
+		// Apply red overlay based on discharge rate (fills from bottom to top)
+		if discharge_rate_percent > 0 {
+			let fill_height =
+				(discharge_rate_percent as f32 / 100.0 * ICON_HEIGHT as f32)
+				.round().clamp(0.0, ICON_HEIGHT as f32) as u32;
+
+			image_overlay_multiply(&mut scaled_img, &self.red_gradient_overlay, 0, (ICON_HEIGHT - fill_height) as i32);
 		}
 		
 		Ok(scaled_img)

@@ -1,9 +1,10 @@
 use battery::Manager;
 use crate::debug_util::dmsg;
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BatteryInfo {
 	pub percentage: i32,
+	pub discharge_rate_percent: i32,
 	pub is_charging: bool,
 }
 
@@ -35,8 +36,16 @@ impl BatteryMonitor {
 						dmsg!("{:?}", bat);
 						let soc = bat.state_of_charge().value;
 						let percentage = (soc * 100.0).round() as i32;
-						let is_charging = matches!(bat.state(), battery::State::Charging);
-						Ok(BatteryInfo{percentage, is_charging})
+						let is_charging =
+							matches!(bat.state(), battery::State::Charging) ||
+							matches!(bat.time_to_empty(), None);
+						let discharge_rate_percent: i32 = match bat.time_to_empty() {
+							None => 0,
+							Some(time) => {
+								(soc / time.get::<battery::units::time::hour>() * 100.0).round() as i32
+							},
+						};
+						Ok(BatteryInfo{percentage, discharge_rate_percent, is_charging})
 					}
 				}
 			}

@@ -9,7 +9,7 @@ use crate::battery_tray_icon::BatteryTrayIcon;
 use crate::debug_util::dmsg;
 use crate::UserEvent;
 
-const UPDATE_SLEEP_SECONDS: u64 = 30;
+const UPDATE_SLEEP_SECONDS: u64 = 5;
 
 pub struct BatteryTrayApp {
 	pub tray_icon: BatteryTrayIcon,
