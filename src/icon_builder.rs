@@ -104,7 +104,13 @@ impl IconBuilder {
 		
 		// Apply green gradient if charging
 		if is_charging {
-			image_overlay_multiply(&mut scaled_img, &self.green_gradient_overlay, 0, 0);
+			if (discharge_rate_percent > 0) {
+				// If we are discharging despite being plugged in it must be a weak usb-c charger so dim the green overlay
+				image_overlay_multiply(&mut scaled_img, &self.green_gradient_overlay, 0, -15);
+			}
+			else {
+				image_overlay_multiply(&mut scaled_img, &self.green_gradient_overlay, 0, 0);
+			}
 		}
 
 		// Apply red overlay based on discharge rate (fills from bottom to top)
