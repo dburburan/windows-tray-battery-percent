@@ -23,8 +23,8 @@ impl BatteryTrayApp {
 	}
 
 	fn check_battery(&mut self, event_loop: &ActiveEventLoop) {
-		if let Err(e) = self.tray_icon.sync_tray_icon() {
-			dmsg!("Failed to update tray icon: {}", e);
+		if let Err(_e) = self.tray_icon.sync_tray_icon() {
+			dmsg!("Failed to update tray icon: {}", _e);
 		}
 		
 		// Make sure we check again soon
@@ -38,13 +38,13 @@ impl ApplicationHandler<UserEvent> for BatteryTrayApp {
 		self.check_battery(event_loop);
 	}
 
-	fn window_event(&mut self, event_loop: &ActiveEventLoop, _window_id: WindowId, event: WindowEvent) {
-		dmsg!("Window event: {:?}", event);
+	fn window_event(&mut self, event_loop: &ActiveEventLoop, _window_id: WindowId, _event: WindowEvent) {
+		dmsg!("Window event: {:?}", _event);
 		self.check_battery(event_loop);
 	}
 
-	fn new_events(&mut self, event_loop: &ActiveEventLoop, cause: winit::event::StartCause) {
-		dmsg!("New event: {:?}", cause);
+	fn new_events(&mut self, event_loop: &ActiveEventLoop, _cause: winit::event::StartCause) {
+		dmsg!("New event: {:?}", _cause);
 		self.check_battery(event_loop);
 	}
 

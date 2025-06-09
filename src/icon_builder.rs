@@ -95,7 +95,7 @@ impl IconBuilder {
 		};
 
 		// Create green overlay used when charging
-		let mut green_gradient_overlay = {
+		let green_gradient_overlay = {
 			let mut img = ImageBuffer::new(ICON_WIDTH, ICON_HEIGHT);
 			let start_color = image::Rgba([0, 255, 0, 255]);
 			let end_color = image::Rgba([255, 255, 255, 255]);
@@ -104,7 +104,7 @@ impl IconBuilder {
 		};
 
 		// Create red overlay used when discharging
-		let mut red_gradient_overlay = {
+		let red_gradient_overlay = {
 			let mut img = ImageBuffer::new(ICON_WIDTH, ICON_HEIGHT);
 			let start_color = image::Rgba([255, 200, 200, 255]);
 			let end_color = image::Rgba([255, 0, 0, 255]);

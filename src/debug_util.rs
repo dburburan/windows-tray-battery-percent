@@ -1,3 +1,4 @@
+#[cfg(feature = "debug-logging")]
 pub fn string_take_end(s: &str, n: usize) -> &str {
 	if n == 0 || s.is_empty() {
 		return "";
@@ -25,6 +26,7 @@ pub fn string_take_end(s: &str, n: usize) -> &str {
 	&s[byte_pos..]
 }
 
+#[cfg(feature = "debug-logging")]
 pub fn debug_println(filename: &str, line: u32, msg: &str) {
 	let now = std::time::SystemTime::now()
 			.duration_since(std::time::UNIX_EPOCH)
@@ -67,6 +69,7 @@ macro_rules! debug_value {
 		($(debug_value!($val)),+,)
 	};
 }
+#[allow(unused_imports)]
 pub use debug_value as dbgt; // Re-export it as dbgt
 
 #[macro_export]
@@ -82,4 +85,5 @@ macro_rules! debug_message {
 		}
 	};
 }
+#[allow(unused_imports)]
 pub use debug_message as dmsg;

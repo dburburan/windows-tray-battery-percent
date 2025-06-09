@@ -1,4 +1,4 @@
-use starship_battery::{Manager, State, units};
+use starship_battery::{Manager, State};
 use crate::debug_util::dmsg;
 use std::time::Instant;
 
