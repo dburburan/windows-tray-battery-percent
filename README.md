@@ -58,7 +58,7 @@ With the combined information, estimating the battery remaining is possible with
 
 ## Building Reduced Binary Size (Optional)
 If you would like a smaller binary, you can build from rust-src. But the size reduction wasn't amazing.
-- Size reduction: ~357KB -> ~277KB
+- Size reduction: ~357kB -> ~277kB
 #### Prerequisites
 - rust nightly
 - rust-src
@@ -68,6 +68,5 @@ rustup component add rust-src --toolchain nightly
 ```
 Then run
 ```
-build.bat
+build-release-minified.bat
 ```
-

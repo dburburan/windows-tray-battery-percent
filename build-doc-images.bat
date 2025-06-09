@@ -1,0 +1,1 @@
+cargo run --bin build-doc-images --features=build-doc-images

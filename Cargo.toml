@@ -6,6 +6,8 @@ edition = "2021"
 [features]
 default = []
 
+build-doc-images = ["image/png"]
+
 # Debug features
 debug = [
 	"debug-logging",
@@ -28,3 +30,9 @@ winit = "0.30"
 
 [build-dependencies]
 winres = "0.1"
+
+[[bin]]
+name = "build-doc-images"
+path = "src/build-doc-images.rs"
+doc = false
+required-features = ["build-doc-images"]
