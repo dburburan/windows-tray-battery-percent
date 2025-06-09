@@ -9,8 +9,10 @@ default = []
 # Debug features
 debug = [
 	"debug-logging",
+	"debug_image_icon",
 ]
 debug-logging = []
+debug_image_icon = []
 
 [profile.release]
 strip = true
