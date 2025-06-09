@@ -44,7 +44,7 @@ pub fn debug_println(filename: &str, line: u32, msg: &str) {
 #[macro_export]
 macro_rules! debug_value {
 	($val:expr) => {
-		#[cfg(not(feature = "no-debug-output"))]
+		#[cfg(feature = "debug-logging")]
 		{
 			match $val {
 				tmp => {
@@ -57,7 +57,7 @@ macro_rules! debug_value {
 				}
 			}
 		}
-		#[cfg(feature = "no-debug-output")]
+		#[cfg(not(feature = "debug-logging"))]
 		{
 			$val
 		}
@@ -72,7 +72,7 @@ pub use debug_value as dbgt; // Re-export it as dbgt
 #[macro_export]
 macro_rules! debug_message {
 	($($arg:tt)*) => {
-		#[cfg(not(feature = "no-debug-output"))]
+		#[cfg(feature = "debug-logging")]
 		{
 			crate::debug_util::debug_println(
 				file!(),

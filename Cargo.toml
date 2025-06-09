@@ -5,8 +5,12 @@ edition = "2021"
 
 [features]
 default = []
-debug = []
-no-debug-output = []
+
+# Debug features
+debug = [
+	"debug-logging",
+]
+debug-logging = []
 
 [profile.release]
 strip = true
