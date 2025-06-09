@@ -55,8 +55,10 @@ impl BatteryTrayIcon {
 			let Ok(icon_image) = self.icon_builder.create_percentage_icon(battery_info.percentage, battery_info.discharge_rate_percent, battery_info.is_charging) else {
 				return Err(format!("Couldn't build icon"));
 			};
-			let icon = Icon::from_rgba(icon_image.clone().into_raw(), icon_image.width(), icon_image.height())
-				.map_err(|e| format!("Failed to create icon: {:?}", e))?;
+			let icon = {
+				let (w, h) = (icon_image.width(), icon_image.height());
+				Icon::from_rgba(icon_image.into_raw(), w, h).map_err(|e| format!("Failed to create icon: {:?}", e))?
+			};
 
 			// Create or update tray icon
 			match &self.tray_icon {
