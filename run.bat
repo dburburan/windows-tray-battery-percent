@@ -1,1 +1,1 @@
-cargo run --features debug
+cargo run --features debug --bin windows-tray-battery-percent
